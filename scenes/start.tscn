@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=3 uid="uid://dxcw2ov0ob30c"]
+
+[ext_resource type="Script" uid="uid://b0m1edtp1oblm" path="res://scripts/player.gd" id="1_jaeev"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ewcy1"]
+sky_top_color = Color(0.24807495, 0.65908366, 0.74428433, 1)
+sky_horizon_color = Color(0.9449448, 1.0632389, 1.0649097, 1)
+ground_bottom_color = Color(0.337285, 0.39945263, 0.32093534, 1)
+ground_horizon_color = Color(0.9449448, 1.0632389, 1.0649097, 1)
+
+[sub_resource type="Sky" id="Sky_jaeev"]
+sky_material = SubResource("ProceduralSkyMaterial_ewcy1")
+
+[sub_resource type="Environment" id="Environment_u80x2"]
+background_mode = 2
+sky = SubResource("Sky_jaeev")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u80x2"]
+albedo_color = Color(0.57135403, 0.7580582, 0.90804815, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bodal"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kdmts"]
+albedo_color = Color(0.7680681, 0.34781596, 0.27393278, 1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_u80x2")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(10, 1, 10)
+material = SubResource("StandardMaterial3D_u80x2")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+script = ExtResource("1_jaeev")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 0.85643834, 0.51624936, 0, -0.51624936, 0.85643834, 0, 2.6382136, 2.8734946)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99977636, 0)
+shape = SubResource("CapsuleShape3D_bodal")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99998134, 0)
+material = SubResource("StandardMaterial3D_kdmts")
