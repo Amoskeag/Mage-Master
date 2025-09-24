@@ -1,10 +1,11 @@
 extends CharacterBody3D
 
-
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
 @onready var camera: Node3D = $CameraRig/Camera3D
 @onready var anim_player: AnimationPlayer = $Mesh/AnimationPlayer
+@onready var anim_tree: AnimationTree = $AnimationTree
+var last_lean := 0.0
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -32,18 +33,27 @@ func _physics_process(delta: float) -> void:
 	turn_to(direction)
 	
 	var current_speed := velocity.length()
-	const RUN_SPEED = 3.5
-	const BLEND_SPEED = 0.2
+	const RUN_SPEED := 3.5
+	const BLEND_SPEED := 0.2
 	
 	if not is_on_floor():
-		anim_player.play("freehand_fall")
-	if current_speed > RUN_SPEED:
-		anim_player.play("freehand_run", BLEND_SPEED)
-	elif current_speed > 0.0:
-		anim_player.play("freehand_walk", BLEND_SPEED, lerp(0.5, 1.75, current_speed / RUN_SPEED))
-	else:
-		anim_player.play("freehand_idle", BLEND_SPEED)
+		#anim_player.play("freehand_fall")
+		anim_tree.set("parameters/Movement/transition_request", "fall")
 		
+	elif current_speed > RUN_SPEED:
+		#anim_player.play("freehand_run", BLEND_SPEED)
+		anim_tree.set("parameters/Movement/transition_request", "run")
+		var lean := direction.dot(global_basis.x)
+		last_lean = lerpf(last_lean, lean, 0.3)
+		anim_tree.set("parameters/run_lean/add_mount", last_lean)
+		
+	elif current_speed > 0.0:
+		anim_tree.set("parameters/Movement/transition_request", "walk")
+		var walk_speed := lerpf(0.5, 1.75, current_speed / RUN_SPEED)
+		anim_tree.set("parameters/walk_speed/scale", walk_speed)
+	else:
+		#anim_player.play("freehand_idle", BLEND_SPEED)
+		anim_tree.set("parameters/Movement/transition_request", "idle")
 func turn_to(direction: Vector3) -> void:
 	if direction.length() > 0:
 		var yaw := atan2(-direction.x, -direction.z)
