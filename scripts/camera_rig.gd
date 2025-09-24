@@ -11,6 +11,8 @@ You can also use Vector2(0, 0) or Vector2.ZERO to initialize the property.
 Vector2() works because both the x and y arguments have a default value of 0, 
 so this is equivalent to Vector2(0, 0).
 '''
+@onready var player: Node3D = get_parent()
+var camera_rig_height: float = position.y
 
 func _ready() -> void:
 	spring_length = camera.position.z
@@ -34,3 +36,6 @@ func _input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func _physics_process(delta: float) -> void:
+	position = player.position + Vector3(0, camera_rig_height, 0)
