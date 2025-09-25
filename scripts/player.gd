@@ -45,7 +45,7 @@ func _physics_process(delta: float) -> void:
 		anim_tree.set("parameters/Movement/transition_request", "run")
 		var lean := direction.dot(global_basis.x)
 		last_lean = lerpf(last_lean, lean, 0.3)
-		anim_tree.set("parameters/run_lean/add_mount", last_lean)
+		anim_tree.set("parameters/run_lean/add_amount", last_lean)
 		
 	elif current_speed > 0.0:
 		anim_tree.set("parameters/Movement/transition_request", "walk")
